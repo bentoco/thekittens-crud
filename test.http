@@ -1,0 +1,18 @@
+POST https://kolr7deblj.execute-api.us-east-1.amazonaws.com/dev/v1/kitten
+
+{
+  "name": "Kurt",
+  "age":4
+}
+
+### 
+GET https://kolr7deblj.execute-api.us-east-1.amazonaws.com/dev/v1/kitten
+
+###
+GET https://kolr7deblj.execute-api.us-east-1.amazonaws.com/dev/v1/kitten/{name}
+
+###
+PUT https://kolr7deblj.execute-api.us-east-1.amazonaws.com/dev/v1/kitten/{name}
+
+###
+DELETE https://kolr7deblj.execute-api.us-east-1.amazonaws.com/dev/v1/kitten/{name}

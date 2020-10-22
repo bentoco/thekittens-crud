@@ -29,9 +29,15 @@ provider:
 #  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+       - dynamodb:PutItem
+       - dynamodb:Scan*
+       - dynamodb:GetItem
+       - dynamodb:UpdateItem
+       - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:service}-kittens-${opt:stage}
 #        - "s3:ListBucket"
 #      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
 #    - Effect: "Allow"
@@ -46,7 +52,7 @@ provider:
 
 # you can define service wide environment variables here
   environment:
-    DYNAMODB_KITTEN_TABLE: kittenTable
+    DYNAMODB_KITTEN_TABLE: ${self:service}-kittens-${opt:stage}
 
 # you can add packaging information here
 #package:
@@ -56,7 +62,8 @@ provider:
 #  exclude:
 #    - exclude-me.js
 #    - exclude-me-dir/**
-
+plugins:
+  - serverless-pseudo-parameters
 functions:
   create:
     handler: handler.create
@@ -130,8 +137,19 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
+resources:
+ Resources:
+  kittensTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: ${self:service}-kittens-${opt:stage}
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: name
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
 #    NewResource:
 #      Type: AWS::S3::Bucket
 #      Properties:
